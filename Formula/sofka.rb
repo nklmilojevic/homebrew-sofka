@@ -2,27 +2,28 @@ class Sofka < Formula
   desc "Kubernetes TUI, reimagined in Rust"
   homepage "https://github.com/nklmilojevic/sofka"
   version "0.27.2"
+  revision 1
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     on_arm do
-      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "5d801b0d67e728d8a176c1b8e9f8b1e5686a4e4f1a18d42975413b3a7af17b9c"
+      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin-licenses.tar.gz"
+      sha256 "034d91de9858ab75f3fa65e563a8a753f16e7abd730b0f340fa51a2d4da1ac90"
     end
     on_intel do
-      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin.tar.gz"
-      sha256 "e452eff9a9dc5d4f43a6b869d86165baf269cac6ce526b198586c229934c7507"
+      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin-licenses.tar.gz"
+      sha256 "a87003d918c2d9e0d3920a903850079cf848e13682b2d746dfbdd23ca9432874"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "97aa2104294dfcc33c63438bab59222c19519728713a83c19a3cfce7eae60882"
+      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu-licenses.tar.gz"
+      sha256 "9e00aedda9c35d2f172c4a4903d406693a98080650f2cc9181c79a5bde400a2d"
     end
     on_intel do
-      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "56fecad163b5f76d591fa1d32ea77ddc5ce42d6e7536e1775a3383b1685fa698"
+      url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu-licenses.tar.gz"
+      sha256 "9b02d5e840b1195d9166390c3b1b0db03642a0809df8ac0f91a5306af58a82ae"
     end
   end
 
@@ -33,6 +34,8 @@ class Sofka < Formula
 
   def install
     bin.install "sofka"
+    pkgshare.install "LICENSE-MIT", "LICENSE-APACHE", "THIRD-PARTY-LICENSES.txt", "RUST-LICENSES.html"
+    pkgshare.install "THIRD-PARTY-SOURCES" if Dir.exist?("THIRD-PARTY-SOURCES")
   end
 
   test do
