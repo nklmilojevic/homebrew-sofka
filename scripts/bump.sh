@@ -15,8 +15,10 @@ base="https://github.com/${repo}/releases/download/${tag}"
 corrected="$(gh release view "$tag" --repo "$repo" --json assets \
   --jq '[.assets[].name | select(endswith("-licenses.tar.gz"))] | length')"
 archive_suffix=""
+revision_line=""
 if [[ "$corrected" == 4 ]]; then
   archive_suffix="-licenses"
+  revision_line="  revision 1"
 elif [[ "$corrected" != 0 ]]; then
   echo "The release has an incomplete set of license corrections" >&2
   exit 1
@@ -34,6 +36,7 @@ class Sofka < Formula
   desc "Kubernetes TUI, reimagined in Rust"
   homepage "https://github.com/${repo}"
   version "${version}"
+${revision_line}
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
