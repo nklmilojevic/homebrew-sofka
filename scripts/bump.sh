@@ -4,13 +4,27 @@
 set -euo pipefail
 
 tag="${1:?usage: bump.sh vX.Y.Z}"
+if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Invalid release tag: $tag" >&2
+  exit 1
+fi
 version="${tag#v}"
 repo="nklmilojevic/sofka"
 base="https://github.com/${repo}/releases/download/${tag}"
 
+corrected="$(gh release view "$tag" --repo "$repo" --json assets \
+  --jq '[.assets[].name | select(endswith("-licenses.tar.gz"))] | length')"
+archive_suffix=""
+if [[ "$corrected" == 4 ]]; then
+  archive_suffix="-licenses"
+elif [[ "$corrected" != 0 ]]; then
+  echo "The release has an incomplete set of license corrections" >&2
+  exit 1
+fi
+
 declare -A sha
 for target in aarch64-apple-darwin x86_64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do
-  asset="sofka-${tag}-${target}.tar.gz"
+  asset="sofka-${tag}-${target}${archive_suffix}.tar.gz"
   curl -fsSL -o "/tmp/${asset}" "${base}/${asset}"
   sha[$target]="$(sha256sum "/tmp/${asset}" | cut -d' ' -f1)"
 done
@@ -24,22 +38,22 @@ class Sofka < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin${archive_suffix}.tar.gz"
       sha256 "${sha[aarch64-apple-darwin]}"
     end
     on_intel do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin${archive_suffix}.tar.gz"
       sha256 "${sha[x86_64-apple-darwin]}"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu${archive_suffix}.tar.gz"
       sha256 "${sha[aarch64-unknown-linux-gnu]}"
     end
     on_intel do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu${archive_suffix}.tar.gz"
       sha256 "${sha[x86_64-unknown-linux-gnu]}"
     end
   end
@@ -51,6 +65,8 @@ class Sofka < Formula
 
   def install
     bin.install "sofka"
+    pkgshare.install "LICENSE-MIT", "LICENSE-APACHE", "THIRD-PARTY-LICENSES.txt"
+    pkgshare.install "THIRD-PARTY-SOURCES" if Dir.exist?("THIRD-PARTY-SOURCES")
   end
 
   test do
