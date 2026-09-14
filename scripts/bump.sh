@@ -13,20 +13,15 @@ repo="nklmilojevic/sofka"
 base="https://github.com/${repo}/releases/download/${tag}"
 
 corrected="$(gh release view "$tag" --repo "$repo" --json assets \
-  --jq '[.assets[].name | select(endswith("-licenses.tar.gz"))] | length')"
-archive_suffix=""
+  --jq '[.assets[].name | select(. == "LICENSE-CORRECTION.json")] | length')"
 revision_line=""
-if [[ "$corrected" == 4 ]]; then
-  archive_suffix="-licenses"
+if [[ "$corrected" == 1 ]]; then
   revision_line="  revision 1"
-elif [[ "$corrected" != 0 ]]; then
-  echo "The release has an incomplete set of license corrections" >&2
-  exit 1
 fi
 
 declare -A sha
 for target in aarch64-apple-darwin x86_64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu; do
-  asset="sofka-${tag}-${target}${archive_suffix}.tar.gz"
+  asset="sofka-${tag}-${target}.tar.gz"
   curl -fsSL -o "/tmp/${asset}" "${base}/${asset}"
   sha[$target]="$(sha256sum "/tmp/${asset}" | cut -d' ' -f1)"
 done
@@ -41,22 +36,22 @@ ${revision_line}
 
   on_macos do
     on_arm do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin${archive_suffix}.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin.tar.gz"
       sha256 "${sha[aarch64-apple-darwin]}"
     end
     on_intel do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin${archive_suffix}.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin.tar.gz"
       sha256 "${sha[x86_64-apple-darwin]}"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu${archive_suffix}.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
       sha256 "${sha[aarch64-unknown-linux-gnu]}"
     end
     on_intel do
-      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu${archive_suffix}.tar.gz"
+      url "https://github.com/${repo}/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
       sha256 "${sha[x86_64-unknown-linux-gnu]}"
     end
   end
