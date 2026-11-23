@@ -1,29 +1,29 @@
 class Sofka < Formula
   desc "Kubernetes TUI, reimagined in Rust"
   homepage "https://github.com/nklmilojevic/sofka"
-  version "0.37.0"
+  version "0.38.0"
 
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     on_arm do
       url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "1a9076ecdf78a438a36406991c16b27a8fc84eab90832cd97ab4742a657bfebb"
+      sha256 "bf0854dcfd09aed13739f3bd1d1e6a025100a7f758574c123e39993066ad83e2"
     end
     on_intel do
       url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-apple-darwin.tar.gz"
-      sha256 "8d587eebb2191913cc877530c817a4454ce7e5610f36e1c31e3c3beb3af2e163"
+      sha256 "7994790f9098944634efdddfe59f7b7fae28265616a5cecff838db344a6a751e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "d9a784e0bb35c822fe7091396821476218815a1a6cb9dcfd1fd528cc0ecda4fc"
+      sha256 "9f3a39fba8c8feab22f233dd0fee6559cf4b4e08d73ec0ea9ff477acdfcbb64b"
     end
     on_intel do
       url "https://github.com/nklmilojevic/sofka/releases/download/v#{version}/sofka-v#{version}-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "c46f81b0ea4713a07cf690b1a3d81078316972336fc7141e6afdde682a470029"
+      sha256 "e814e623543b7a400c69521cb897fdf5ed77c9ab66aad0719ca8ff0b7db6e9b9"
     end
   end
 
